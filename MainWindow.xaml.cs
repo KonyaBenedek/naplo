@@ -18,7 +18,7 @@ using System.Reflection;
 using System.Xml.Linq;
 using System.Collections.ObjectModel;
 
-namespace orai0310
+namespace WpfApp1
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -28,9 +28,9 @@ namespace orai0310
     public partial class MainWindow : Window
     {
 
-        string fajlNev = "naplo.csv";
-        List<Osztalyzatok> jegyek = new List<Osztalyzatok>();
-       
+        string fajlNev = "naplo.txt";
+        ObservableCollection<Osztalyzatok> jegyek = new ObservableCollection<Osztalyzatok>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,25 +47,21 @@ namespace orai0310
             {
                 fajlNev = ofd.FileName;
                 string dirPath = System.IO.Path.GetDirectoryName(fajlNev);
-                string fullPath = System.IO.Path.Combine(dirPath, fajlNev); 
+                string fullPath = System.IO.Path.Combine(dirPath, fajlNev);
                 lblPath.Content = fullPath;
             }
             else
             {
-                fajlNev = "naplo.csv";
+                fajlNev = "naplo.txt";
                 string dirPath = System.IO.Path.GetDirectoryName(fajlNev);
                 string fullPath = System.IO.Path.Combine(dirPath, fajlNev);
                 lblPath.Content = fullPath;
             }
-           
-
+            Betolt(fajlNev);
         }
 
-        private void OsztalyzatokBetoltese(string fajlNev)
+        private void Betolt(string fajlNev)
         {
-            
-
-
             jegyek.Clear();
             StreamReader sr = new StreamReader(fajlNev);
             while (!sr.EndOfStream)
@@ -84,9 +80,8 @@ namespace orai0310
             sr.Close();
             dgJegyek.ItemsSource = jegyek;
             dgJegyek.Items.Refresh();
-            MessageBox.Show("Az állomány beolvasása befejeződött!");
-
-            
+            lblJegyC.Content = dgJegyek.Items.Count;
+            lblAtlag.Content = jegyek.Average(x => x.Jegy);
         }
 
         private void sliJegy_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -140,7 +135,7 @@ namespace orai0310
                         sw.WriteLine(save);
                         sw.Close();
                         dgJegyek.Items.Refresh();
-                        MessageBox.Show("Az adatok sikeresen rögzítve lettek.");
+                        Betolt(fajlNev);
                     }
                 }
                 else
@@ -157,20 +152,13 @@ namespace orai0310
 
         private void btnTolt_Click(object sender, RoutedEventArgs e)
         {
-            OsztalyzatokBetoltese(fajlNev);
-            lblJegyC.Content = dgJegyek.Items.Count;
-            lblAtlag.Content = jegyek.Average(x => x.Jegy);
-            
+            Betolt(fajlNev);
         }
 
-        private void rdoVezToKer_Checked(object sender, RoutedEventArgs e)
+        private void rdo_Checked(object sender, RoutedEventArgs e)
         {
-
-        }
-
-        private void rdoKerToVez_Checked(object sender, RoutedEventArgs e)
-        {
-           
+   
         }
     }
 }
+
